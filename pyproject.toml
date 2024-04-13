@@ -1,0 +1,106 @@
+[tool.poetry]
+name = "alchemy-example"
+version = "0.1.0"
+description = ""
+authors = ["Denis Diveev <ddiveev99@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.29"}
+fastapi = "^0.110.1"
+pydantic = "^2.7.0"
+uvicorn = "^0.29.0"
+alembic = "^1.13.1"
+pydantic-settings = "^2.2.1"
+gunicorn = "^21.2.0"
+asyncpg = "^0.29.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pyright = "^1.1.358"
+ruff = "^0.3.7"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+
+[tool.pyright]
+pythonVersion = "3.12"
+typeCheckingMode = "standard"
+strict = ["src", "tests"]
+reportImplicitOverride = true
+
+[tool.ruff]
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "venv",
+]
+
+# Like Black
+line-length = 88
+indent-width = 4
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "B904", # Fastapi does not work with 'raise ... from err'
+    "UP040",
+    "D",
+    "ANN101", "ANN102",
+    "INP001",
+    "FBT",
+    "PLR0913",
+    "RUF001", "RUF003"
+]
+
+fixable = ["ALL"]
+unfixable = []
+
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.pep8-naming]
+classmethod-decorators = [
+    "pydantic.validator",
+    "pydantic.field_validator",
+    "pydantic.root_validator",
+    "declared_attr",
+    "expression",
+    "comparator",
+    "cascading",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"**{tests}/*" = [
+    "S101", "S311",
+    "ANN201", "ANN202", "ANN001",
+    "ARG002", "ARG001",
+    "PLR2004"
+]
+"migrations/versions/*" = ["E501", ]
+
+[tool.ruff.lint.flake8-pytest-style]
+mark-parentheses = false
+fixture-parentheses = false
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query", "fastapi.File"]
+
+[tool.ruff.format]
+# Like Black
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = false
+docstring-code-line-length = "dynamic"
+
