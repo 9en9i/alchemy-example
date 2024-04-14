@@ -4,8 +4,10 @@ from typing import final
 from sqlalchemy import RowMapping, select
 from sqlalchemy.orm import joinedload, selectinload, with_expression
 
+from src.core.enums.comparison_operator import ComparisonOperator
 from src.core.sevice import Service
 from src.database import (
+    AuthorModel,
     BookModel,
     CategoryModel,
     MagazineModel,
@@ -118,3 +120,28 @@ class BookService(Service):
         stmt = select(CategoryModel.name).limit(limit).offset(offset)
         result = await self.session.execute(stmt)
         return result.mappings().all()
+
+    async def get_authors(
+        self,
+        limit: int,
+        offset: int,
+        comp_op: ComparisonOperator | None,
+        book_count: int | None,
+    ) -> Sequence[AuthorModel]:
+        stmt = select(AuthorModel).limit(limit).offset(offset)
+        if comp_op and book_count:
+            match comp_op:
+                case ComparisonOperator.eq:
+                    stmt = stmt.where(AuthorModel.book_count == book_count)
+                case ComparisonOperator.ne:
+                    stmt = stmt.where(AuthorModel.book_count != book_count)
+                case ComparisonOperator.gt:
+                    stmt = stmt.where(AuthorModel.book_count > book_count)
+                case ComparisonOperator.ge:
+                    stmt = stmt.where(AuthorModel.book_count >= book_count)
+                case ComparisonOperator.lt:
+                    stmt = stmt.where(AuthorModel.book_count < book_count)
+                case ComparisonOperator.le:
+                    stmt = stmt.where(AuthorModel.book_count <= book_count)
+        result = await self.session.scalars(stmt)
+        return result.all()
