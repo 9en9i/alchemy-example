@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import final
+from typing import final, Final
 
 from sqlalchemy import RowMapping, select
 from sqlalchemy.orm import joinedload, selectinload, with_expression
@@ -15,6 +15,15 @@ from src.database import (
     PublicationModel,
 )
 from src.database.favorite_publications import FavoritePublicationsModel
+
+_MATCHING_OPERATOR: Final = {
+    ComparisonOperator.eq: "==",
+    ComparisonOperator.ne: "!=",
+    ComparisonOperator.gt: ">",
+    ComparisonOperator.ge: ">=",
+    ComparisonOperator.lt: "<",
+    ComparisonOperator.le: "<=",
+}
 
 
 @final
@@ -129,19 +138,11 @@ class BookService(Service):
         book_count: int | None,
     ) -> Sequence[AuthorModel]:
         stmt = select(AuthorModel).limit(limit).offset(offset)
+
         if comp_op and book_count:
-            match comp_op:
-                case ComparisonOperator.eq:
-                    stmt = stmt.where(AuthorModel.book_count == book_count)
-                case ComparisonOperator.ne:
-                    stmt = stmt.where(AuthorModel.book_count != book_count)
-                case ComparisonOperator.gt:
-                    stmt = stmt.where(AuthorModel.book_count > book_count)
-                case ComparisonOperator.ge:
-                    stmt = stmt.where(AuthorModel.book_count >= book_count)
-                case ComparisonOperator.lt:
-                    stmt = stmt.where(AuthorModel.book_count < book_count)
-                case ComparisonOperator.le:
-                    stmt = stmt.where(AuthorModel.book_count <= book_count)
+            stmt = stmt.where(
+                AuthorModel.book_count.op(_MATCHING_OPERATOR[comp_op])(book_count)
+            )
+
         result = await self.session.scalars(stmt)
         return result.all()
