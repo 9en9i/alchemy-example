@@ -16,9 +16,13 @@ class ImageSchema(Schema):
     name: str
 
 
-@final
 class AuthorSchema(Schema):
     name: str
+
+
+@final
+class AuthorSchemaExtended(AuthorSchema):
+    book_count: int
 
 
 class PublicationSchema(Schema):
