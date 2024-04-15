@@ -4,7 +4,7 @@ from fastapi import APIRouter
 
 from src.books.depends import InjectPublicationFromPath, InjectUnionPublicationFromPath
 from src.books.schemas import (
-    AuthorSchemaExtended,
+    AuthorSchemaExtendedSchema,
     BookCategorySchema,
     BookSchema,
     MagazineSchema,
@@ -110,11 +110,11 @@ async def get_authors(
     pagination: Inject[LimitOffsetPagination],
     comparison_operator: InjectFromQuery[ComparisonOperator | None] = None,
     book_count: InjectFromQuery[int | None] = None,
-) -> list[AuthorSchemaExtended]:
+) -> list[AuthorSchemaExtendedSchema]:
     authors = await service.get_authors(
         limit=pagination.limit,
         offset=pagination.offset,
         comp_op=comparison_operator,
         book_count=book_count,
     )
-    return AuthorSchemaExtended.cast(authors)
+    return AuthorSchemaExtendedSchema.cast(authors)

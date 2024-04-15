@@ -21,7 +21,7 @@ class AuthorSchema(Schema):
 
 
 @final
-class AuthorSchemaExtended(AuthorSchema):
+class AuthorSchemaExtendedSchema(AuthorSchema):
     book_count: int
 
 
