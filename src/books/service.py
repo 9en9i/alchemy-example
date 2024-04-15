@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import final, Final
+from typing import Final, final
 
 from sqlalchemy import RowMapping, select
 from sqlalchemy.orm import joinedload, selectinload, with_expression
@@ -141,7 +141,7 @@ class BookService(Service):
 
         if comp_op and book_count:
             stmt = stmt.where(
-                AuthorModel.book_count.op(_MATCHING_OPERATOR[comp_op])(book_count)
+                AuthorModel.book_count.op(_MATCHING_OPERATOR[comp_op])(book_count),
             )
 
         result = await self.session.scalars(stmt)
