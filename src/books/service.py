@@ -46,7 +46,7 @@ class BookService(Service):
         if search_by_title is not None:
             stmt = stmt.where(PublicationModel.title.icontains(search_by_title))
 
-        if search_by_title is not None:
+        if search_by_description is not None:
             stmt = stmt.where(
                 PublicationModel.description.icontains(search_by_description),
             )
