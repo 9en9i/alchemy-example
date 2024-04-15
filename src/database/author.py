@@ -5,7 +5,8 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, relationship
 
 from src.core.db.types import Primary
-from src.database import BaseModel, BookModel
+from src.database import BaseModel
+from src.database.publications.book import BookModel
 
 
 @final

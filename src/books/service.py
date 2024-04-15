@@ -17,7 +17,7 @@ from src.database import (
 from src.database.favorite_publications import FavoritePublicationsModel
 
 _MATCHING_OPERATOR: Final = {
-    ComparisonOperator.eq: "==",
+    ComparisonOperator.eq: "=",
     ComparisonOperator.ne: "!=",
     ComparisonOperator.gt: ">",
     ComparisonOperator.ge: ">=",
